@@ -1,9 +1,11 @@
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class App {
 
-    private static final String url = "jdbc:mysql://localhost:3306/mydb";
+    // private static final String url = "jdbc:mysql://localhost:3306/mydb"; //used for crud Operations
+    private static final String url = "jdbc:mysql://localhost:3306/lenden";
     private static final String username = "root";
     private static final String password = "India@11";
 
@@ -17,9 +19,9 @@ public class App {
         try {
             Connection connection = DriverManager.getConnection(url, username, password); //connecting to databas
 
+            connection.setAutoCommit(false);//to manually commit to the database
+
             // *** Data inserted into database using prepareStatement ***
-
-
             // String query = "INSERT INTO students(name,age,marks) VALUES(?,?,?)";
             // // statement statement = connection.createStatement();
             // PreparedStatement pst = connection.prepareStatement(query);
@@ -43,13 +45,7 @@ public class App {
             // } else {
             //     System.out.println("Marks not found");
             // }
-
-
-
-
-
             // *** Data update from database using prepareStatement ***
-
             // String query = "UPDATE students SET marks = ?,age = ? WHERE  id = ?";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
             // preparedStatement.setDouble(1, 99.5);
@@ -71,14 +67,7 @@ public class App {
             // } else {
             //     System.out.println("Data is not deleted successfully");
             // }
-
-
-
-
-
-
             // ####### Batch Processing using statement #######
-            
             // Statement statement = connection.createStatement();
             // Scanner sc = new Scanner(System.in);
             // while (true) {
@@ -102,14 +91,7 @@ public class App {
             //         System.out.println("Query: " + i + "  not executed Sucessfully");
             //     }
             // }
-
-
-
-            
-
-
             // ####### Batch Processing using prepared statement #######
-
             // String query = "INSERT INTO students(name,age,marks) VALUES(?,?,?)";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
             // Scanner sc = new Scanner(System.in);
@@ -122,30 +104,81 @@ public class App {
             //     double marks = sc.nextDouble();
             //     System.out.print("Enter More Data (Y/N)");
             //     String choice = sc.next();
-
             //     preparedStatement.setString(1, name);
             //     preparedStatement.setInt(2, age);
             //     preparedStatement.setDouble(3, marks);
-
             //     preparedStatement.addBatch();
             //     if (choice.toUpperCase().equals("N")) {
             //         break;
             //     }
             // }
             // int[] arr = preparedStatement.executeBatch();
-
             // for (int i = 0; i < arr.length; i++) {
             //     if (arr[i] == 0) {
             //         System.out.println("Query: " + i + "  not executed Sucessfully");
             //     }
             // }
-
-
-
             // *********** Transaction Handleing ****************************
+            String Debit_query = "UPDATE accounts SET balance = balance-? WHERE account_number = ?";
+            String Credit_query = "UPDATE accounts SET balance = balance+? WHERE account_number = ?";
 
+            PreparedStatement debiPreparedStatement = connection.prepareStatement(Debit_query);
+            PreparedStatement creditPreparedStatement = connection.prepareStatement(Credit_query);
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter Debit Account Number: ");
+            int account_number = scanner.nextInt();
+            System.out.println("enter Amount: ");
+            double amount = scanner.nextDouble();
+
+            debiPreparedStatement.setDouble(1, amount);
+            debiPreparedStatement.setInt(2, account_number);
+
+            creditPreparedStatement.setDouble(1, amount);
+            creditPreparedStatement.setInt(2, 102);
+            debiPreparedStatement.executeUpdate();
+            creditPreparedStatement.executeUpdate();
+
+            if (isSufficient(connection, account_number, amount)) {
+                connection.commit();
+                System.out.println("Transaction successfull");
+            } else {
+                connection.rollback();
+                System.out.println("Transaction failure");
+            }
+            // debiPreparedStatement.executeUpdate();
+            // creditPreparedStatement.executeUpdate();
+
+            connection.close();
+            debiPreparedStatement.close();
+            creditPreparedStatement.close();
+            scanner.close();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    static boolean isSufficient(Connection connection, int account_number, double amount) {
+        try {
+            String query = "SELECT balance FROM accounts WHERE account_number =?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, account_number);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                double current_balance = resultSet.getDouble("balance");
+                if (amount > current_balance) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
