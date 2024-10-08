@@ -22,6 +22,7 @@ public class App {
             connection.setAutoCommit(false);//to manually commit to the database
 
             // *** Data inserted into database using prepareStatement ***
+
             // String query = "INSERT INTO students(name,age,marks) VALUES(?,?,?)";
             // // statement statement = connection.createStatement();
             // PreparedStatement pst = connection.prepareStatement(query);
@@ -34,6 +35,9 @@ public class App {
             // } else {
             //     System.out.println("data is not inserted successfully");
             // }
+
+
+
             // *** Data retrive from database using prepareStatement ***
             // String query = "SELECT marks FROM students WHERE id = ?";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -45,7 +49,12 @@ public class App {
             // } else {
             //     System.out.println("Marks not found");
             // }
+
+
+
+
             // *** Data update from database using prepareStatement ***
+
             // String query = "UPDATE students SET marks = ?,age = ? WHERE  id = ?";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
             // preparedStatement.setDouble(1, 99.5);
@@ -57,7 +66,13 @@ public class App {
             // } else {
             //     System.out.println("Data is not updated successfully");
             // }
+
+
+
+
+
             // *** Data Delete from database using prepareStatement ***
+
             // String query = "DELETE FROM students WHERE id =? ";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
             // preparedStatement.setInt(1, 1);
@@ -67,7 +82,16 @@ public class App {
             // } else {
             //     System.out.println("Data is not deleted successfully");
             // }
+
+
+
+
+
+
+
+
             // ####### Batch Processing using statement #######
+
             // Statement statement = connection.createStatement();
             // Scanner sc = new Scanner(System.in);
             // while (true) {
@@ -91,7 +115,14 @@ public class App {
             //         System.out.println("Query: " + i + "  not executed Sucessfully");
             //     }
             // }
+
+
+
+
+
+
             // ####### Batch Processing using prepared statement #######
+
             // String query = "INSERT INTO students(name,age,marks) VALUES(?,?,?)";
             // PreparedStatement preparedStatement = connection.prepareStatement(query);
             // Scanner sc = new Scanner(System.in);
@@ -118,7 +149,12 @@ public class App {
             //         System.out.println("Query: " + i + "  not executed Sucessfully");
             //     }
             // }
+
+
+
+
             // *********** Transaction Handleing ****************************
+            
             String Debit_query = "UPDATE accounts SET balance = balance-? WHERE account_number = ?";
             String Credit_query = "UPDATE accounts SET balance = balance+? WHERE account_number = ?";
 
